@@ -1,6 +1,11 @@
 import { useState } from "react";
 
 export default function Welcome() {
+    
+    function cls(...className: string[]){
+        return className.join(" ");
+    }
+
     const [method, setMethod] = useState<"email" | "phone">("email");
     const onEmailClick = () => setMethod("email");
     const onPhoneClick = () => setMethod("phone");
@@ -11,8 +16,8 @@ export default function Welcome() {
                 <div className="flex flex-col items-center">
                     <h5 className="text-sm text-gray-500 font-medium">Enter using:</h5>
                     <div className="grid border-b w-full mt-8 grid-cols-2 gap-16">
-                        <button className={`pb-4 border-b-2 font-medium ${method === "email" ?  "border-orange-500 text-orange-400" : "" }`} onClick={onEmailClick}>Email</button>
-                        <button className="pb-4 font-medium" onClick={onPhoneClick}>Phone</button>
+                        <button className={cls("pb-4 border-b-2 font-medium", method === "email" ?  "border-orange-500 border-b-2  text-orange-400" : "border-transparent text-gray-500" )} onClick={onEmailClick}>Email</button>
+                        <button className={cls("pb-4 border-b-2 font-medium", method === "phone" ?  "border-orange-500 border-b-2  text-orange-400" : "border-transparent text-gray-500" )} onClick={onPhoneClick}>Phone</button>
                     </div>
                 </div>
                 <form>
