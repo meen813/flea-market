@@ -1,13 +1,35 @@
 import type { NextPage } from "next";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import Button from "../components/button";
 import Input from "../components/input";
 import { cls } from "../libs/utils";
 
+
+interface WelcomeForm {
+    email?: string;
+    phone?: string;
+}
+
 const Welcome: NextPage = () => {
+    const { register, handleSubmit, reset } = useForm<WelcomeForm>()
     const [method, setMethod] = useState<"email" | "phone">("email");
-    const onEmailClick = () => setMethod("email");
-    const onPhoneClick = () => setMethod("phone");
+    const onEmailClick = () => {
+        reset()
+        setMethod("email")
+    };
+    const onPhoneClick = () => {
+        reset()
+        setMethod("phone")
+    };
+
+    const onValid = (data: WelcomeForm) => {
+        fetch("/api/users/welcome", {
+            method: "POST",
+            body: JSON.stringify(data),
+        })
+    };
+
     return (
         <div className="mt-16 px-4">
             <h3 className="text-3xl font-bold text-center">Welcome to Flea-market</h3>
@@ -39,12 +61,19 @@ const Welcome: NextPage = () => {
                         </button>
                     </div>
                 </div>
-                <form className="flex flex-col mt-8 space-y-4">
+                <form onSubmit={ handleSubmit(onValid) } className="flex flex-col mt-8 space-y-4">
                     {method === "email" ? (
-                        <Input name="email" label="Email address" type="email" required />
+                        <Input
+                            register={register("email", {required: true})}
+                            name="email"
+                            label="Email address"
+                            type="email"
+                            required
+                        />
                     ) : null}
                     {method === "phone" ? (
                         <Input
+                            register={register("phone", {required: true})}
                             name="phone"
                             label="Phone number"
                             type="number"
@@ -70,7 +99,7 @@ const Welcome: NextPage = () => {
                     <div className="grid grid-cols-2 mt-2 gap-3">
                         <button className="flex justify-center items-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
                             <svg
-                                className="w-5 h-5" 
+                                className="w-5 h-5"
                                 aria-hidden="true"
                                 fill="currentColor"
                                 viewBox="0 0 20 20"
