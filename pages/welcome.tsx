@@ -12,6 +12,7 @@ interface WelcomeForm {
 }
 
 const Welcome: NextPage = () => {
+    const [submitting, setSubmitting] = useState(false)
     const { register, handleSubmit, reset } = useForm<WelcomeForm>()
     const [method, setMethod] = useState<"email" | "phone">("email");
     const onEmailClick = () => {
@@ -24,9 +25,15 @@ const Welcome: NextPage = () => {
     };
 
     const onValid = (data: WelcomeForm) => {
+        setSubmitting(true)
         fetch("/api/users/welcome", {
             method: "POST",
             body: JSON.stringify(data),
+            headers: {
+                "Content-type":"application/json",
+            },
+        }).then(()=>{setSubmitting(false);
+
         })
     };
 
@@ -83,7 +90,7 @@ const Welcome: NextPage = () => {
                     ) : null}
                     {method === "email" ? <Button text={"Get login link"} /> : null}
                     {method === "phone" ? (
-                        <Button text={"Get one-time password"} />
+                        <Button text={submitting ? "Loading" : "Get one-time password"} />
                     ) : null}
                 </form>
 
