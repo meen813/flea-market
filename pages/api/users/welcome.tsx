@@ -5,7 +5,8 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { phone, email } = req.body;
-    const payload = phone ? { phone: +phone } : { email }
+    const user = phone ? { phone: +phone } : { email };
+    const payload = Math.floor(100000 + Math.random() * 900000) + "";
 
     //refactored user and token combined by 'createOrCreate'
     //upsert is used to update or insert.
@@ -23,16 +24,16 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
     const token = await client.token.create({
         data: { 
-            payload: "11114",
+            payload,
             user: {
                 connectOrCreate: {
                     where: {
-                        ...payload,
+                        ...user
             
                     },
                     create: {
                         name: "Anonymous",
-                        ...payload,
+                        ...user,
                     },
                 },
             },
