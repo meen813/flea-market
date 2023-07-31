@@ -9,7 +9,7 @@ import { cls } from "../libs/client/utils";
 
 interface WelcomeForm {
     email?: string;
-    phone?: string;
+    phone?: any;
 }
 
 const Welcome: NextPage = () => {
