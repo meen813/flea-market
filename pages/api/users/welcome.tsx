@@ -56,20 +56,20 @@ async function handler(
     });
 
     if (phone) {
-        const message = await twilioClient.messages.create({
-            messagingServiceSid: process.env.TWILIO_MSID,
-            to: process.env.TEST_PHONE!, // this should be 'req.body' to send the code to real users' phone numbers.
-            body: `Your login token is ${payload}.`
-        });
-        console.log(message);
+        // const message = await twilioClient.messages.create({
+        //     messagingServiceSid: process.env.TWILIO_MSID,
+        //     to: process.env.TEST_PHONE!, // this should be 'req.body' to send the code to real users' phone numbers.
+        //     body: `Your login token is ${payload}.`
+        // });
+        // console.log(message);
     } else if (email){
-        const email = await resend.emails.send({
-            from: devEmail,
-            to: myEmail,
-            subject: "Hello! This is Treasure Trove Verification Email",
-            text:`Your token is ${payload}`,
-            html: `<strong>Your token is ${payload}</strong>`
-        });
+        // const email = await resend.emails.send({
+        //     from: devEmail,
+        //     to: myEmail,
+        //     subject: "Hello! This is Treasure Trove Verification Email",
+        //     text:`Your token is ${payload}`,
+        //     html: `<strong>Your token is ${payload}</strong>`
+        // });
         console.log(email);
     }
 
