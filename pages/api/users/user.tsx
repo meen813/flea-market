@@ -13,26 +13,21 @@ declare module "iron-session" {
 }
 
 
+
 async function handler(
     req: NextApiRequest,
     res: NextApiResponse<ResponseType>
 ) {
-    const { token } = req.body;
-    //prisma
-    const present = await client.token.findUnique({
-        where: {
-            payload: token,
-        },
-        include: {user: true}// user info
+    console.log(req.session.user);
+    const profile = await client.user.findUnique({
+        where: { id: req.session.user?.id },
     });
-    if (!present) return res.status(404).end();
-    req.session.user = { 
-        id: present?.userId
-    }
-    await req.session.save()
-    res.status(200).end();
+    res.json({
+        ok: true,
+        profile,
+    });
 }
-export default withIronSessionApiRoute(withHandler("POST", handler), {
+export default withIronSessionApiRoute(withHandler("GET", handler), {
     cookieName: "TT session",
     password: "666563563hfhfh345345ddhgh35654645646", 
 })
