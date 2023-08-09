@@ -14,10 +14,10 @@ async function handler(
         where: {
             payload: token,
         },
-        include: {user: true}// user info
+        include: { user: true }// user info
     });
     if (!tokenPresent) return res.status(404).end();
-    req.session.user = { 
+    req.session.user = {
         id: tokenPresent.userId //if token is there, its user id will be stored in req.session.user
     }
     await req.session.save();
@@ -28,4 +28,4 @@ async function handler(
     })
     res.json({ ok: true });
 }
-export default withApiSession(withHandler("POST", handler));
+export default withApiSession(withHandler({method: "POST", handler})); 

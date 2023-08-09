@@ -82,4 +82,8 @@ async function handler(
 
 // This will return what 'withHandler' returns => function returning another function
 // When this runs, it will be replaced by 'withHandler.ts'
-export default withHandler("POST", handler)
+export default withHandler({
+    method: "POST",
+    handler,
+    isPrivate: false,
+})
