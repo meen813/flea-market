@@ -1,13 +1,19 @@
 import useUser from "@/libs/client/useUser";
+import { Item } from "@prisma/client";
 import type { NextPage } from "next";
 import useSWR from "swr";
 import FloatingButton from "../components/floating-button";
-import Item from "../components/item";
+import Product from "../components/product";
 import Layout from "../components/layout";
+
+interface ItemsResponse {
+  ok: boolean;
+  items: Item[]
+}
 
 const Home: NextPage = () => {
   const {user, isLoading} = useUser();
-  const { data } = useSWR("/api/items")
+  const { data } = useSWR<ItemsResponse>("/api/items")
   console.log(data)
   return (
     <Layout title="Home" hasTabBar>
@@ -15,12 +21,12 @@ const Home: NextPage = () => {
         <title>Home</title>  
       </head> */}
       <div className="flex flex-col space-y-5 divide-y">
-        {[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1].map((_, i) => (
-          <Item
-            id={i}
-            key={i}
-            title="iPhone 14"
-            price={99}
+        {data?.items?.map((item) => (
+          <Product
+            id={item.id}
+            key={item.id}
+            title={item.name}
+            price={item.price}
             comments={1}
             hearts={1}
           />

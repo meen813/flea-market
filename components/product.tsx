@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-interface ItemProps {
+interface ProductProps {
     title: string;
     id: number;
     price: number;
@@ -8,13 +8,13 @@ interface ItemProps {
     hearts: number;
 }
 
-export default function Item({
+export default function Product({
     title,
     price,
     comments,
     hearts,
     id,
-}: ItemProps) {
+}: ProductProps) {
     return (
         <Link legacyBehavior href={`/items/${id}`}>
             <a className="flex px-4 pt-5 cursor-pointer justify-between">

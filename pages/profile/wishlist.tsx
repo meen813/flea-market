@@ -1,13 +1,13 @@
 import type { NextPage } from "next";
-import Item from "../../components/item";
 import Layout from "../../components/layout";
+import Product from "../../components/product";
 
 const Wishlist: NextPage = () => {
     return (
         <Layout title="WishList" canGoBack>
             <div className="flex flex-col space-y-5 pb-10  divide-y">
                 {[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1].map((_, i) => (
-                    <Item
+                    <Product
                         key={i}
                         id={i}
                         title="iPhone 14"

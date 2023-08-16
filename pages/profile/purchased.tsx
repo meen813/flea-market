@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import Item from "../../components/item";
+import Product from "../../components/product";
 import Layout from "../../components/layout";
 
 const Bought: NextPage = () => {
@@ -7,7 +7,7 @@ const Bought: NextPage = () => {
         <Layout title="Order History" canGoBack>
             <div className="flex flex-col space-y-5 pb-10  divide-y">
                 {[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1].map((_, i) => (
-                    <Item
+                    <Product
                         key={i}
                         id={i}
                         title="iPhone 14"
