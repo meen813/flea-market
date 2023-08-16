@@ -1,9 +1,19 @@
+import { Item, User } from "@prisma/client";
 import type { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import Button from "../../components/button";
 import Layout from "../../components/layout";
+
+interface ItemWithUser extends Item {
+    user: User;
+}
+
+interface ItemDetailResponse {
+    ok: boolean;
+    item: Item;
+}
 
 const ItemDetail: NextPage = () => {
     const router = useRouter();
