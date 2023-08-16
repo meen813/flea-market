@@ -22,8 +22,25 @@ async function handler(
             },
         }
     });
-    console.log(item)
-    res.json({ ok: true, item });
+
+    //related items search using prisma
+    const searchTerms = item?.name.split(" ").map((word) => ({
+        name: {
+            contains: word,
+        },
+    }));
+    const relatedItems = await client.item.findMany({
+        where: {
+            OR: searchTerms,
+            AND: {
+                id: {
+                    not: item?.id,
+                },
+            },
+        },
+    });
+    console.log(relatedItems)
+    res.json({ ok: true, item, relatedItems });
 }
 
 export default withApiSession(withHandler({

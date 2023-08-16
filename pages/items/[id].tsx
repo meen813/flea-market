@@ -12,12 +12,13 @@ interface ItemWithUser extends Item {
 
 interface ItemDetailResponse {
     ok: boolean;
-    item: Item;
+    item: ItemWithUser;
+    relatedItems: Item[]
 }
 
 const ItemDetail: NextPage = () => {
     const router = useRouter();
-    const { data } = useSWR(router.query.id ? `/api/items/${router.query.id}` : null)
+    const { data } = useSWR<ItemDetailResponse>(router.query.id ? `/api/items/${router.query.id}` : null)
     console.log(data)
     return (
         //create a loading screen for this...
@@ -28,13 +29,13 @@ const ItemDetail: NextPage = () => {
                     <div className="flex cursor-pointer py-3 border-t border-b items-center space-x-3">
                         <div className="w-12 h-12 rounded-full bg-slate-300" />
                         <div>
-                            <p className="text-sm font-medium text-gray-700">{data?.item.user.name}</p>
+                            <p className="text-sm font-medium text-gray-700">{data?.item?.user.name}</p>
                             <Link href={`/users/profiles/${data?.item?.user.id}`}>
                                 <p className="text-xs font-medium text-gray-500">
                                     View profile &rarr;
                                 </p>
                             </Link>
-                        </div>
+                        </div>  
                     </div>
                     <div className="mt-5">
                         <h1 className="text-3xl font-bold text-gray-900">{data?.item.name}</h1>
@@ -66,15 +67,22 @@ const ItemDetail: NextPage = () => {
                 </div>
                 <div>
                     <h2 className="text-2xl font-bold text-gray-900">Similar items</h2>
-                    <div className=" mt-6 grid grid-cols-2 gap-4">
-                        {[1, 2, 3, 4, 5, 6].map((_, i) => (
-                            <div key={i}>
-                                <div className="h-56 w-full mb-4 bg-slate-300" />
-                                <h3 className="text-gray-700 -mb-1">ipad mini</h3>
-                                <span className="text-sm font-medium text-gray-900">$600</span>
-                            </div>
-                        ))}
-                    </div>
+                    
+                        <div className=" mt-6 grid grid-cols-2 gap-4">
+                            {data?.relatedItems ? (
+                                data.relatedItems.map((item) => (
+                                    <Link href={`/items/${item.id}`}  key={item.id}>
+                                    <div key={item.id}>
+                                        <div className="h-56 w-full mb-4 bg-slate-300" />
+                                        <h3 className="text-gray-700 -mb-1">{item.name}</h3>
+                                        <span className="text-sm font-medium text-gray-900">${item.price}</span>
+                                    </div>
+                                    </Link>
+                                ))
+                            ) : (
+                                <h3>No Similar Items</h3>
+                            )}
+                        </div>
                 </div>
             </div>
         </Layout>
