@@ -1,9 +1,16 @@
 import type { NextPage } from "next";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import useSWR from "swr";
 import Button from "../../components/button";
 import Layout from "../../components/layout";
 
 const ItemDetail: NextPage = () => {
+    const router = useRouter();
+    const { data } = useSWR(router.query.id ? `/api/items/${router.query.id}` : null)
+    console.log(data)
     return (
+        //create a loading screen for this...
         <Layout canGoBack>
             <div className="px-4  py-4">
                 <div className="mb-8">
@@ -11,17 +18,19 @@ const ItemDetail: NextPage = () => {
                     <div className="flex cursor-pointer py-3 border-t border-b items-center space-x-3">
                         <div className="w-12 h-12 rounded-full bg-slate-300" />
                         <div>
-                            <p className="text-sm font-medium text-gray-700">Ryan</p>
-                            <p className="text-xs font-medium text-gray-500">
-                                View profile &rarr;
-                            </p>
+                            <p className="text-sm font-medium text-gray-700">{data?.item.user.name}</p>
+                            <Link href={`/users/profiles/${data?.item?.user.id}`}>
+                                <p className="text-xs font-medium text-gray-500">
+                                    View profile &rarr;
+                                </p>
+                            </Link>
                         </div>
                     </div>
                     <div className="mt-5">
-                        <h1 className="text-3xl font-bold text-gray-900">ipad pro 11</h1>
-                        <span className="text-2xl block mt-3 text-gray-900">$1,100</span>
+                        <h1 className="text-3xl font-bold text-gray-900">{data?.item.name}</h1>
+                        <span className="text-2xl block mt-3 text-gray-900">{data?.item.price}</span>
                         <p className=" my-6 text-gray-700">
-                            Hello
+                            {data?.item.description}
                         </p>
                         <div className="flex items-center justify-between space-x-2">
                             <Button large text="Talk to seller" />
