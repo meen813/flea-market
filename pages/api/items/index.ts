@@ -7,30 +7,39 @@ async function handler(
     req: NextApiRequest,
     res: NextApiResponse<ResponseType>
 ) {
-    const {
-        body: { name, price, description },
-        session: { user },
-    } = req;
-    const item = await client.item.create({
-        data: {
-            name,
-            price: +price,
-            description,
-            image:"xx",
-            user: {
-                connect: {
-                    id: user?.id,
+    if (req.method === "GET") {
+        const items = await client.item.findMany({})
+        res.json({
+            ok: true,
+            items
+        });
+    }
+    if (req.method === "POST") {
+        const {
+            body: { name, price, description },
+            session: { user },
+        } = req;
+        const item = await client.item.create({
+            data: {
+                name,
+                price: +price,
+                description,
+                image: "xx",
+                user: {
+                    connect: {
+                        id: user?.id,
+                    },
                 },
             },
-        },
-    });
-    res.json({
-        ok: true,
-        item,
-    });
+        });
+        res.json({
+            ok: true,
+            item,
+        });
+    }
 }
 
 export default withApiSession(withHandler({
-    method: "POST",
+    methods: ["GET", "POST"],
     handler,
 }));

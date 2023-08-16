@@ -7,7 +7,8 @@ import Layout from "../components/layout";
 
 const Home: NextPage = () => {
   const {user, isLoading} = useUser();
-  const {} = useSWR("/api/items")
+  const { data } = useSWR("/api/items")
+  console.log(data)
   return (
     <Layout title="Home" hasTabBar>
       {/* <head>
