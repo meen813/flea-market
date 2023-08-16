@@ -1,12 +1,13 @@
 import useUser from "@/libs/client/useUser";
 import type { NextPage } from "next";
+import useSWR from "swr";
 import FloatingButton from "../components/floating-button";
 import Item from "../components/item";
 import Layout from "../components/layout";
 
 const Home: NextPage = () => {
   const {user, isLoading} = useUser();
-  console.log(user);
+  const {} = useSWR("/api/items")
   return (
     <Layout title="Home" hasTabBar>
       {/* <head>

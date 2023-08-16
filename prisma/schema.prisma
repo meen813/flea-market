@@ -20,6 +20,10 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   tokens    Token[]
+  items     Item[]
+
+  @@index([phone])
+  @@index([email])
 }
 
 model Token {
@@ -32,4 +36,21 @@ model Token {
   
 
   @@index([userId])
+  @@index([payload]) // Added an index on 'payload' for faster lookups
 } 
+
+model Item {
+  id          Int      @id @default(autoincrement())
+  // payload     String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      Int
+  image       String
+  name        String
+  price       Int
+  description String   @db.MediumText
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  // @@index([payload]) // Added an index on 'payload' for faster lookups 
+}
