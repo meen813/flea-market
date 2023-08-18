@@ -10,22 +10,22 @@ async function handler(
 ) {
     const { token } = req.body;
     //prisma
-    const tokenPresent = await client.token.findUnique({
+    const haveToken = await client.token.findUnique({
         where: {
             payload: token,
         },
         include: { user: true }// user info
     });
-    if (!tokenPresent) return res.status(404).end();
+    if (!haveToken) return res.status(404).end();
     req.session.user = {
-        id: tokenPresent.userId //if token is there, its user id will be stored in req.session.user
+        id: haveToken.userId //if token is there, its user id will be stored in req.session.user
     }
     await req.session.save();
     await client.token.deleteMany({
         where: {
-            userId: tokenPresent.userId,
+            userId: haveToken.userId,
         },
     })
     res.json({ ok: true });
 }
-export default withApiSession(withHandler({methods: ["POST"], handler})); 
+export default withApiSession(withHandler({methods: ["POST"], handler, isPrivate: false})); 

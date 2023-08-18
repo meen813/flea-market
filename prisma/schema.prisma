@@ -12,15 +12,17 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  phone     String?  @unique
-  email     String?  @unique
-  name      String
-  avatar    String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  tokens    Token[]
-  items     Item[]
+  id          Int      @id @default(autoincrement())
+  phone       String?  @unique
+  email       String?  @unique
+  firstName   String
+  lastName    String
+  avatar      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  tokens      Token[]
+  items       Item[]
+  favorites   Favorite[]
 
   @@index([phone])
   @@index([email])
@@ -41,7 +43,6 @@ model Token {
 
 model Item {
   id          Int      @id @default(autoincrement())
-  // payload     String   @unique
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      Int
   image       String
@@ -50,7 +51,22 @@ model Item {
   description String   @db.MediumText
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  favorites   Favorite[]
 
   @@index([userId])
   // @@index([payload]) // Added an index on 'payload' for faster lookups 
 }
+
+model Favorite {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  item      Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  itemId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([itemId])
+  @@index([userId])
+}
+

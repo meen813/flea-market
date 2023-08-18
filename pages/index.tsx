@@ -5,6 +5,7 @@ import useSWR from "swr";
 import FloatingButton from "../components/floating-button";
 import Product from "../components/product";
 import Layout from "../components/layout";
+import Head from "next/head";
 
 interface ItemsResponse {
   ok: boolean;
@@ -17,9 +18,9 @@ const Home: NextPage = () => {
   console.log(data)
   return (
     <Layout title="Home" hasTabBar>
-      {/* <head>
+      <Head>
         <title>Home</title>  
-      </head> */}
+      </Head>
       <div className="flex flex-col space-y-5 divide-y">
         {data?.items?.map((item) => (
           <Product

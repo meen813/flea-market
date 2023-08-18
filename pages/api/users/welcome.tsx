@@ -47,7 +47,8 @@ async function handler(
 
                     },
                     create: {
-                        name: "Anonymous",
+                        firstName: "Anonymous",
+                        lastName: "Anonymous",
                         ...user,
                     },
                 },

@@ -16,14 +16,15 @@ async function handler(
             user: {
                 select: {
                     id: true,
-                    name: true,
+                    firstName: true,
+                    lastName: true,
                     avatar: true,
                 }
             },
         }
     });
 
-    //related items search using prisma
+    //related items search with prisma
     const searchTerms = item?.name.split(" ").map((word) => ({
         name: {
             contains: word,
