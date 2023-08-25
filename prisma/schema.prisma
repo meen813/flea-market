@@ -22,7 +22,7 @@ model User {
   updatedAt   DateTime @updatedAt
   tokens      Token[]
   items       Item[]
-  favorites   Favorite[]
+  wishLists   WishList[]
 
   @@index([phone])
   @@index([email])
@@ -51,13 +51,13 @@ model Item {
   description String   @db.MediumText
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  favorites   Favorite[]
+  wishList   WishList[]
 
   @@index([userId])
   // @@index([payload]) // Added an index on 'payload' for faster lookups 
 }
 
-model Favorite {
+model WishList {
   id        Int      @id @default(autoincrement())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int

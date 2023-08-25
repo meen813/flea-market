@@ -7,7 +7,9 @@ async function handler(
     req: NextApiRequest,
     res: NextApiResponse<ResponseType>
 ) {
-    const { id } = req.query;
+    const { query: {id},
+            session: {user}
+        } = req;
     const item = await client.item.findUnique({
         where: {
             id: Number(id),
@@ -40,10 +42,17 @@ async function handler(
             },
         },
     });
-    console.log(relatedItems)
-    res.json({ ok: true, item, relatedItems });
+    const isLiked = Boolean(await client.wishList.findFirst({
+        where: {
+            itemId: item?.id,
+            userId: user?.id,
+        },
+        select: {
+            id: true,
+        },
+    }))
+    res.json({ ok: true, item, isLiked, relatedItems });
 }
-
 export default withApiSession(withHandler({
     methods: ["GET"],
     handler,
