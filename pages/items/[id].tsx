@@ -1,10 +1,11 @@
 import useMutation from "@/libs/client/useMutation";
+import useUser from "@/libs/client/useUser";
 import { cls } from "@/libs/client/utils";
 import { Item, User } from "@prisma/client";
 import type { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 import Button from "../../components/button";
 import Layout from "../../components/layout";
 
@@ -20,16 +21,23 @@ interface ItemDetailResponse {
 }
 
 const ItemDetail: NextPage = () => {
+    const {user, isLoading } = useUser();
     const router = useRouter();
-    const { data} = useSWR<ItemDetailResponse>
+    const {mutate} = useSWRConfig();
+    const { data, mutate:boundMutate } = useSWR<ItemDetailResponse>
         (router.query.id ? `/api/items/${router.query.id}` : null)
     console.log(data)
     const [toggleWishList] = useMutation(`/api/items/${router.query.id}/wishList`)
-    const onWishListClick = () => {
-        toggleWishList({});
+    const onWishListClick = () => { //implementing a responsive ui for 'like' button, this is 'an optimistic UI update'
+        if(!data) return;
+        boundMutate({...data, isLiked: !data.isLiked},
+                false) // this boolean makes SWR revalidate if it is true
+        //example of use of unbound mutation
+        // mutate("/api/users/user", (prev: any) => ({ok: !prev.ok}), false)
+        toggleWishList({}); // sending a request to the backend
     }
     return (
-        //create a loading screen for this...
+        //create a loading screen for this..  .
         <Layout canGoBack>
             <div className="px-4  py-4">
                 <div className="mb-8">
@@ -37,8 +45,11 @@ const ItemDetail: NextPage = () => {
                     <div className="flex cursor-pointer py-3 border-t border-b items-center space-x-3">
                         <div className="w-12 h-12 rounded-full bg-slate-300" />
                         <div>
-                            <p className="text-sm font-medium text-gray-700">{data?.item?.user.firstName} {data?.item?.user.lastName}</p>
-                            <Link href={`/users/profiles/${data?.item?.user.id}`}>
+                            <p className="text-sm font-medium text-gray-700">
+                                {data?.item?.user?.firstName} 
+                                {data?.item?.user?.lastName}
+                            </p>
+                            <Link href={`/users/profiles/${data?.item?.user?.id}`}>
                                 <p className="text-xs font-medium text-gray-500">
                                     View profile &rarr;
                                 </p>
@@ -46,10 +57,10 @@ const ItemDetail: NextPage = () => {
                         </div>
                     </div>
                     <div className="mt-5">
-                        <h1 className="text-3xl font-bold text-gray-900">{data?.item.name}</h1>
-                        <span className="text-2xl block mt-3 text-gray-900">$ {data?.item.price}</span>
+                        <h1 className="text-3xl font-bold text-gray-900">{data?.item?.name}</h1>
+                        <span className="text-2xl block mt-3 text-gray-900">$ {data?.item?.price}</span>
                         <p className=" my-6 text-gray-700">
-                            {data?.item.description}
+                            {data?.item?.description}
                         </p>
                         <div className="flex items-center justify-between space-x-2">
                             <Button large text="Talk to seller" />

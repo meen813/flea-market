@@ -9,7 +9,7 @@ export default function useUser(){
     const {data, error} = useSWR("/api/users/user")
     const router = useRouter();
     useEffect(() => {
-        if(data && !data.ok){
+        if(data && !data.ok){ //if user has not logged in, it will redirect to the 'welcome page'
             router.replace("/welcome")
         }
     }, [data, router])

@@ -15,7 +15,7 @@ async function handler(
     //if wishList data already exists, delete the data, else create one.
     const alreadyFaved = await client.wishList.findFirst({
         where: {
-            itemId: +id.toString(),
+            itemId: +id!.toString(), //add '!' to resolve typescript error.
             userId: user?.id,
         }
     });
@@ -37,7 +37,7 @@ async function handler(
                 },
                 item: {
                     connect: {
-                        id: +id.toString(),
+                        id: +id!.toString(),  //add '!' to resolve typescript error.
                     }
                 }
             },
