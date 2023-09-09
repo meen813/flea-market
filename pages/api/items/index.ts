@@ -8,7 +8,15 @@ async function handler(
     res: NextApiResponse<ResponseType>
 ) {
     if (req.method === "GET") {
-        const items = await client.item.findMany({})
+        const items = await client.item.findMany({
+            include: { //better use '_count:' because you may not want the entire info of wishList
+                _count: { 
+                    select: {
+                        wishList: true,
+                    },
+                },
+            },
+        }); // set the relations
         res.json({
             ok: true,
             items

@@ -1,5 +1,5 @@
 import useUser from "@/libs/client/useUser";
-import { Item } from "@prisma/client";
+import { Item, User } from "@prisma/client";
 import type { NextPage } from "next";
 import useSWR from "swr";
 import FloatingButton from "../components/floating-button";
@@ -7,9 +7,15 @@ import Product from "../components/product";
 import Layout from "../components/layout";
 import Head from "next/head";
 
+interface ItemWithCount extends Item {
+  _count:{
+    wishList: number;
+  }
+}
+
 interface ItemsResponse {
   ok: boolean;
-  items: Item[]
+  items: ItemWithCount[]
 }
 
 const Home: NextPage = () => {
@@ -28,8 +34,8 @@ const Home: NextPage = () => {
             key={item.id}
             title={item.name}
             price={item.price}
-            comments={1}
-            hearts={1}
+            // comments={1}
+            hearts={item._count.wishList}
           />
         ))}
         <FloatingButton href="/items/upload">
