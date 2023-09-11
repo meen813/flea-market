@@ -42,7 +42,7 @@ async function handler(
             },
         },
     });
-    const isLiked = Boolean(await client.wishList.findFirst({
+    const isWished = Boolean(await client.wishList.findFirst({
         where: {
             itemId: item?.id,
             userId: user?.id,
@@ -51,7 +51,7 @@ async function handler(
             id: true,
         },
     }))
-    res.json({ ok: true, item, isLiked, relatedItems });
+    res.json({ ok: true, item, isWished, relatedItems });
 }
 export default withApiSession(withHandler({
     methods: ["GET"],
