@@ -25,7 +25,7 @@ const Write: NextPage = () => {
     const [post, {loading, data}] = useMutation<WriteResponse>("/api/posts")
     const onValid = (data: WriteForm) => {
         if(loading) return; //this prevents from loading data more than once when multiple clicks
-        post(data)
+        post({...data, latitude, longitude})
     };
     useEffect(() => {
         if(data && data.ok){

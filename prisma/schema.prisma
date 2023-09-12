@@ -118,3 +118,5 @@ model LikeComment {
   @@index([postId])
   @@index([userId])
 }
+
+
