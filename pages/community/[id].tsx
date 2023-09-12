@@ -5,6 +5,7 @@ import type { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import { useForm } from "react-hook-form";
 import useSWR from "swr";
 import Layout from "../../components/layout";
 import TextArea from "../../components/textarea";
@@ -29,12 +30,23 @@ interface CommunityPostResponse {
 
 }
 
+interface CommentForm {
+    commentText: string;
+}
+
+interface CommentResponse {
+    ok: boolean;
+    response: Comment;
+}
+
 const CommunityPostDetail: NextPage = () => {
     const router = useRouter();
+    const { register, handleSubmit, reset } = useForm<CommentForm>()
     const { data, mutate } = useSWR<CommunityPostResponse>(
         router.query.id ? `/api/posts/${router.query.id}` : null
     );
-    const [like] = useMutation(`/api/posts/${router.query.id}/like`)
+    const [like, {loading}] = useMutation(`/api/posts/${router.query.id}/like`)
+    const [sendComment, {data: commentData, loading: commentLoading} ] = useMutation<CommentResponse>(`/api/posts/${router.query.id}/comments`)
     const onLikeClick = () => {
         if (!data) return;
         mutate({
@@ -46,16 +58,23 @@ const CommunityPostDetail: NextPage = () => {
             },
             isLiked: !data.isLiked,
         }, false); // false prevents from revalidating
-        like({}); //back-end
+        if(!loading) { // to prevent from 'race condtion'
+            like({}); //back-end
+        }
     }
 
-    // useEffect(() => {
-    //     if (data && !data.ok) {
-    //         router.push("/community");
-    //     }
-    // }, [data, router]);
+    const onValid = (form: CommentForm) => {
+        console.log(form)
+        if(commentLoading) return;
+        sendComment(form);
+    }
 
-    console.log(data);
+    useEffect(()=> {
+        if(commentData && commentData.ok) {
+            reset()
+        }
+    }, [commentData, reset])
+
     return (
         <Layout canGoBack>
             <div>
@@ -126,21 +145,22 @@ const CommunityPostDetail: NextPage = () => {
                             <span className="text-sm block font-medium text-gray-700">
                                 {comment.user.firstName} {comment.user.lastName}
                             </span>
-                            <span className="text-xs text-gray-500 block ">{comment.createdAt.toString()}</span>
+                            {/* <span className="text-xs text-gray-500 block ">{comment.createdAt.toString()}</span> */}
                             <p className="text-gray-700 mt-2">
                                 {comment.commentText}
                             </p>
                         </div>
                     </div>))}
                 </div>
-                <form className="px-4">
+                <form className="px-4" onSubmit={handleSubmit(onValid)}>
                     <TextArea
                         name="description"
                         placeholder="Answer this question!"
                         required
+                        register={register("commentText", {required: true, minLength: 3})}
                     />
                     <button className="mt-2 w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 focus:outline-none ">
-                        Reply
+                        {commentLoading ? "Loading..." : "Reply"}
                     </button>
                 </form>
             </div>
