@@ -12,20 +12,24 @@ datasource db {
 }
 
 model User {
-  id            Int      @id @default(autoincrement())
-  phone         String?  @unique
-  email         String?  @unique
-  firstName     String
-  lastName      String
-  avatar        String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  tokens        Token[]
-  items         Item[]
-  wishLists     WishList[]
-  posts         Post[]
-  comments      Comment[]
-  likeComments  LikeComment[]
+  id                Int      @id @default(autoincrement())
+  phone             String?  @unique
+  email             String?  @unique
+  firstName         String
+  lastName          String
+  avatar            String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  tokens            Token[]
+  items             Item[]
+  wishLists         WishList[]
+  salesHistory      SalesHistory[]
+  purchasedHistory  PurchasedHistory[]
+  posts             Post[]
+  comments          Comment[]
+  likeComments      LikeComment[]
+  writtenReviews    Review[] @relation(name: "writtenReviews")
+  receivedReviews   Review[] @relation(name: "receivedReviews")
 
 
   @@index([phone])
@@ -46,32 +50,21 @@ model Token {
 } 
 
 model Item {
-  id          Int      @id @default(autoincrement())
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      Int
-  image       String
-  name        String
-  price       Int
-  description String   @db.MediumText
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  wishList    WishList[]
+  id                Int      @id @default(autoincrement())
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId            Int
+  image             String
+  name              String
+  price             Int
+  description       String   @db.MediumText
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  wishList          WishList[]
+  salesHistory      SalesHistory[]
+  purchasedHistory  PurchasedHistory[]
 
   @@index([userId])
   // @@index([payload]) // Added an index on 'payload' for faster lookups 
-}
-
-model WishList {
-  id        Int      @id @default(autoincrement())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    Int
-  item      Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
-  itemId    Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([itemId])
-  @@index([userId])
 }
 
 model Post {
@@ -119,4 +112,55 @@ model LikeComment {
   @@index([userId])
 }
 
+model Review {
+  id            Int      @id @default(autoincrement())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  review        String   @db.MediumText
+  createdBy     User     @relation(name:"writtenReviews", fields: [createdById], references: [id], onDelete: Cascade)
+  createdById   Int
+  createdFor    User     @relation(name:"receivedReviews", fields: [createdForId], references: [id], onDelete: Cascade)
+  createdForId  Int
 
+  @@index([createdById])
+  @@index([createdForId])
+}
+
+model WishList {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  item      Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  itemId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([itemId])
+  @@index([userId])
+}
+
+model SalesHistory {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  item      Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  itemId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([itemId])
+  @@index([userId])
+}
+
+model PurchasedHistory {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  item      Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  itemId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([itemId])
+  @@index([userId])
+}
