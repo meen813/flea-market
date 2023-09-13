@@ -126,7 +126,7 @@ export default function Layout({
                             <span>Chats</span>
                         </a>
                     </Link>
-                    <Link legacyBehavior href="/live">
+                    {/* <Link legacyBehavior href="/live">
                         <a
                             className={cls(
                                 "flex flex-col items-center space-y-2 ",
@@ -151,7 +151,7 @@ export default function Layout({
                             </svg>
                             <span>Live</span>
                         </a>
-                    </Link>
+                    </Link> */}
                     <Link legacyBehavior href="/profile">
                         <a
                             className={cls(

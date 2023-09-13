@@ -17,7 +17,7 @@ interface ItemListResponse {
 
 
 export default function ItemList({ kind }: ItemListProps) {
-    const { data } = useSWR<ItemListResponse>(`/api/users/user/${kind}`)
+    const { data } = useSWR<ItemListResponse>(`/api/users/user/${kind}`) 
     return data ?
         <>
             {data[kind]?.map((history) => (
