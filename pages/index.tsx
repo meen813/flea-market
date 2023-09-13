@@ -7,7 +7,7 @@ import Product from "../components/product";
 import Layout from "../components/layout";
 import Head from "next/head";
 
-interface ItemWithCount extends Item {
+export interface ItemWithCount extends Item {
   _count:{
     wishList: number;
   }

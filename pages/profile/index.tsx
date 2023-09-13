@@ -54,7 +54,7 @@ const Profile: NextPage = () => {
               </span>
             </a>
           </Link>
-          <Link legacyBehavior href="/profile/bought">
+          <Link legacyBehavior href="/profile/purchased">
             <a className="flex flex-col items-center">
               <div className="w-14 h-14 text-white bg-blue-400 rounded-full flex items-center justify-center">
                 <svg

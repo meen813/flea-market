@@ -23,7 +23,7 @@ model User {
   tokens            Token[]
   items             Item[]
   wishLists         WishList[]
-  salesHistory      SalesHistory[]
+  salesList         SalesList[]
   purchasedHistory  PurchasedHistory[]
   posts             Post[]
   comments          Comment[]
@@ -60,7 +60,7 @@ model Item {
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
   wishList          WishList[]
-  salesHistory      SalesHistory[]
+  salesList         SalesList[]
   purchasedHistory  PurchasedHistory[]
 
   @@index([userId])
@@ -140,7 +140,7 @@ model WishList {
   @@index([userId])
 }
 
-model SalesHistory {
+model SalesList {
   id        Int      @id @default(autoincrement())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int

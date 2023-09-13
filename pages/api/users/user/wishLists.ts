@@ -9,20 +9,28 @@ async function handler(
     res: NextApiResponse<ResponseType>
 ) {
     const {
-        session: {user},
+        session: { user },
     } = req;
-    const purchasedHistories = await client.purchasedHistory.findMany({
+    const wishLists = await client.wishList.findMany({
         where: {
-            userId: user?.id
+            userId: user?.id,
         },
         include: {
-            item: true,
+            item: {
+                include: {
+                    _count: {
+                        select: {
+                            wishList: true,
+                        }
+                    }
+                }
+            }
         }
     })
-    
+
     res.json({
         ok: true,
-        purchasedHistories,
+        wishLists,
     });
 }
 export default withApiSession(withHandler({
