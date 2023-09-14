@@ -9,15 +9,92 @@ async function handler(
     res: NextApiResponse<ResponseType>
 ) {
     // console.log(req.session.user);
-    const profile = await client.user.findUnique({
-        where: { id: req.session.user?.id },
-    });
-    res.json({
-        ok: true,
-        profile,
-    });
+    if (req.method === "GET") {
+        const profile = await client.user.findUnique({
+            where: { id: req.session.user?.id },
+        });
+        res.json({
+            ok: true,
+            profile,
+        });
+    }
+    if (req.method === "POST") {
+        const { 
+            session: { user }, 
+            body: { email, phone, firstName, lastName } 
+        } = req;
+        //check if user updates its email or phone with same old ones (should not be sent)
+        const currentUser = await client.user.findUnique({
+            where: {
+                id: user?.id,
+            },
+        });
+        if (email && email !== currentUser?.email) {
+            const alreadyExists = Boolean(await client.user.findUnique({
+                where: {
+                    email,
+                },
+                select: {
+                    id: true,
+                },
+            }))
+            if (alreadyExists) {
+                return res.json({
+                    ok: false,
+                    error: "Email already in use"
+                })
+            }
+            await client.user.update({
+                where: {
+                    id: user?.id,
+                },
+                data: {
+                    email,
+                }
+            });
+            res.json({ ok: true })
+        }
+        if (phone && phone !== currentUser?.phone) {
+            const alreadyExists = Boolean(await client.user.findUnique({
+                where: {
+                    phone,
+                },
+                select: {
+                    id: true,
+                },
+            }))
+            if (alreadyExists) {
+                return res.json({
+                    ok: false,
+                    error: "Phone number already in use"
+                })
+            }
+            await client.user.update({
+                where: {
+                    id: user?.id,
+                },
+                data: {
+                    phone,
+                }
+            });
+            res.json({ ok: true })
+        }
+        if (firstName && lastName){
+            await client.user.update({
+                where: {
+                    id: user?.id,
+                },
+                data: {
+                    firstName,
+                    lastName,
+                }
+            })
+        }
+
+        res.json({ ok: true })
+    }
 }
 export default withApiSession(withHandler({
-    methods: ["GET"],
+    methods: ["GET", "POST"],
     handler,
 }));
