@@ -47,6 +47,12 @@ const EditProfile: NextPage = () => {
         }
     }, [data, setError])
 
+    //send user back to the profile page after updating
+    useEffect(() => {
+        if (data?.ok === true) {
+        router.push(`/profile`);
+        }
+        }, [data, router]);
     return (
         <Layout canGoBack title="Edit Profile">
             <form onSubmit={handleSubmit(onValid)} className="py-10 px-4 space-y-4">
