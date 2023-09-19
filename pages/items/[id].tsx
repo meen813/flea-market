@@ -21,6 +21,8 @@ interface ItemDetailResponse {
 }
 
 const ItemDetail: NextPage = () => {
+
+    
     const {user, isLoading } = useUser();
     const router = useRouter();
     const {mutate} = useSWRConfig();
@@ -36,6 +38,23 @@ const ItemDetail: NextPage = () => {
         // mutate("/api/users/user", (prev: any) => ({ok: !prev.ok}), false)
         toggleWishList({}); // sending a request to the backend
     }
+    const deleteItem = async () => {
+        try {
+            const response = await fetch(`/api/items/${router.query.id}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                console.log('아이템이 삭제되었습니다.');
+                router.push('/'); // 예: 아이템이 삭제되면 홈 페이지로 이동
+            } else {
+                console.error('아이템 삭제 중 오류가 발생했습니다.');
+            }
+        } catch (error) {
+            console.error('아이템 삭제 중 오류가 발생했습니다.', error);
+        }
+    };
+    
     return (
         //create a loading screen for this..  .
         <Layout canGoBack>
@@ -46,14 +65,14 @@ const ItemDetail: NextPage = () => {
                         <div className="w-12 h-12 rounded-full bg-slate-300" />
                         <div>
                             <p className="text-sm font-medium text-gray-700">
-                                {data?.item?.user?.firstName} 
-                                {data?.item?.user?.lastName}
+                                {data?.item?.user?.firstName} {data?.item?.user?.lastName}
                             </p>
                             <Link href={`/users/profiles/${data?.item?.user?.id}`}>
                                 <p className="text-xs font-medium text-gray-500">
                                     View profile &rarr;
                                 </p>
                             </Link>
+                            
                         </div>
                     </div>
                     <div className="mt-5">
@@ -64,6 +83,28 @@ const ItemDetail: NextPage = () => {
                         </p>
                         <div className="flex items-center justify-between space-x-2">
                             <Button large text="Talk to seller" />
+                            {user?.id === data?.item?.user?.id && (
+                        <button
+                            onClick={deleteItem}
+                            className="p-3 rounded-md flex items-center justify-center hover:bg-gray-100 text-red-400 hover:text-red-500"
+                        >
+                            <svg
+                                className="h-6 w-6"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                aria-hidden="true"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M6 18L18 6M6 6l12 12"
+                                />
+                            </svg>
+                        </button>
+                    )}
                             <button
                                 onClick={onWishListClick}
                                 className={cls(
