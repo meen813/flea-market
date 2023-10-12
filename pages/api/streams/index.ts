@@ -14,11 +14,11 @@ async function handler(
             name, price, description
         }
     } = req;
-    if(req.method === "POST") {
+    if (req.method === "POST") {
         const stream = await client.stream.create({
             data: {
-                name, 
-                price, 
+                name,
+                price,
                 description,
                 user: {
                     connect: {
@@ -26,12 +26,12 @@ async function handler(
                     }
                 }
             }
-        })
+        });
+        res.json({ ok: true, stream });
+    } else if(req.method === "GET") {
+        const streams = await client.stream.findMany();
+        res.json({ ok: true, streams })
     }
-    res.json({
-        ok: true,
-        
-    });
 }
 export default withApiSession(withHandler({
     methods: ["GET", "POST"],

@@ -3,16 +3,16 @@ import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Stream } from "twilio/lib/twiml/VoiceResponse";
+import { Stream } from "@prisma/client"
 import Button from "../../components/button";
 import Input from "../../components/input";
 import Layout from "../../components/layout";
 import TextArea from "../../components/textarea";
 
 interface CreateForm{
-    name: String;
-    price: String;
-    description: String;
+    name: string;
+    price: string;
+    description: string;
 }
 
 interface CreateResponse {
@@ -43,7 +43,7 @@ const Create: NextPage = () => {
                     name="name" 
                     type="text" />
                 <Input
-                    register={register("price", {required: true} )}
+                    register={register("price", { required: true, valueAsNumber: true })}
                     required
                     label="Price"
                     name="price"

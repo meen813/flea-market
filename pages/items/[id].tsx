@@ -22,18 +22,18 @@ interface ItemDetailResponse {
 
 const ItemDetail: NextPage = () => {
 
-    
-    const {user, isLoading } = useUser();
+
+    const { user, isLoading } = useUser();
     const router = useRouter();
-    const {mutate} = useSWRConfig();
-    const { data, mutate:boundMutate } = useSWR<ItemDetailResponse>
+    const { mutate } = useSWRConfig();
+    const { data, mutate: boundMutate } = useSWR<ItemDetailResponse>
         (router.query.id ? `/api/items/${router.query.id}` : null)
     console.log(data)
     const [toggleWishList] = useMutation(`/api/items/${router.query.id}/wishList`)
     const onWishListClick = () => { //implementing a responsive ui for 'like' button, this is 'an optimistic UI update'
-        if(!data) return;
-        boundMutate({...data, isLiked: !data.isLiked},
-                false) // this boolean makes SWR revalidate if it is true
+        if (!data) return;
+        boundMutate({ ...data, isLiked: !data.isLiked },
+            false) // this boolean makes SWR revalidate if it is true
         //example of use of unbound mutation
         // mutate("/api/users/user", (prev: any) => ({ok: !prev.ok}), false)
         toggleWishList({}); // sending a request to the backend
@@ -54,7 +54,7 @@ const ItemDetail: NextPage = () => {
             console.error('아이템 삭제 중 오류가 발생했습니다.', error);
         }
     };
-    
+
     return (
         //create a loading screen for this..  .
         <Layout canGoBack>
@@ -72,7 +72,7 @@ const ItemDetail: NextPage = () => {
                                     View profile &rarr;
                                 </p>
                             </Link>
-                            
+
                         </div>
                     </div>
                     <div className="mt-5">
@@ -82,29 +82,20 @@ const ItemDetail: NextPage = () => {
                             {data?.item?.description}
                         </p>
                         <div className="flex items-center justify-between space-x-2">
-                            <Button large text="Talk to seller" />
-                            {user?.id === data?.item?.user?.id && (
-                        <button
-                            onClick={deleteItem}
-                            className="p-3 rounded-md flex items-center justify-center hover:bg-gray-100 text-red-400 hover:text-red-500"
-                        >
-                            <svg
-                                className="h-6 w-6"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                aria-hidden="true"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M6 18L18 6M6 6l12 12"
-                                />
-                            </svg>
-                        </button>
-                    )}
+
+                            {user?.id === data?.item?.user?.id ? (
+                                <button
+                                    onClick={deleteItem}
+                                    className={cls(
+                                        "w-full bg-orange-500 hover:bg-orange-600 text-white  px-4 border border-transparent rounded-md shadow-sm font-medium focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 focus:outline-none",
+                                        "py-3 text-base"
+                                    )}
+                                >
+                                    Delete Item
+                                </button>
+                            ) : (
+                                <Button large text="Talk to seller" />
+                            )}
                             <button
                                 onClick={onWishListClick}
                                 className={cls(
@@ -114,19 +105,19 @@ const ItemDetail: NextPage = () => {
                                         : "text-gray-400 hover:text-gray-500"
                                 )}
                             >
-                                {data?.isLiked ? 
+                                {data?.isLiked ?
                                     <svg
-                                    className="w-6 h-6"
-                                    fill="currentColor"
-                                    viewBox="0 0 20 20"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    aria-hidden="true"
+                                        className="w-6 h-6"
+                                        fill="currentColor"
+                                        viewBox="0 0 20 20"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        aria-hidden="true"
                                     >
-                                    <path
-                                        clipRule="evenodd"
-                                        fillRule="evenodd"
-                                        d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-                                    />
+                                        <path
+                                            clipRule="evenodd"
+                                            fillRule="evenodd"
+                                            d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                                        />
                                     </svg>
                                     : <svg
                                         className="h-6 w-6 "
